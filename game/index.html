@@ -1,0 +1,1338 @@
+<!doctype html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>FIX THE BLOCK — Steveston Garage Doors</title>
+<meta name="description" content="A garage-door reflex game from Steveston Garage Doors. Six houses. Three lives. Each fix = $627. Made in Richmond, BC.">
+<meta name="theme-color" content="#0F1D2E">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="FIX THE BLOCK 🔧 — Steveston Garage Doors">
+<meta property="og:description" content="Six houses. Six broken garage doors. Three misses and you're done. Each fix = $627. Made in Richmond, BC. Edgy chatter included.">
+<meta property="og:url" content="https://stevestongaragedoors.ca/game/">
+<meta property="og:image" content="https://stevestongaragedoors.ca/game/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="en_CA">
+<meta property="og:site_name" content="Steveston Garage Doors">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="FIX THE BLOCK 🔧 (778) 800-0769">
+<meta name="twitter:description" content="Tap broken garage doors. Don't miss three. The Vancouver browser game your group chat deserves.">
+<meta name="twitter:image" content="https://stevestongaragedoors.ca/game/og.png">
+<link rel="canonical" href="https://stevestongaragedoors.ca/game/">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --navy:#0F1D2E;--navy-2:#1A2B40;--brass:#B8862C;--brass-2:#D9A848;
+  --rust:#B8442B;--rust-2:#E25E40;--bone:#F4EDE0;--bone-2:#C8BFB0;
+  --gold:#F0C44A;--line:rgba(244,237,224,0.12);
+  --font-display:'Fraunces',Georgia,serif;
+  --font-body:'DM Sans',system-ui,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--navy);color:var(--bone);font-family:var(--font-body);overscroll-behavior:none;overflow:hidden}
+body{
+  display:flex;align-items:center;justify-content:center;
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  background:radial-gradient(ellipse at top,#15293f 0%,var(--navy) 60%,#08111c 100%);
+  user-select:none;-webkit-user-select:none;
+}
+button{font-family:inherit;color:inherit;background:none;border:none;cursor:pointer;touch-action:manipulation}
+a{color:var(--brass-2);text-decoration:none}
+
+#app{
+  position:relative;width:100%;max-width:480px;height:100dvh;max-height:100vh;
+  display:flex;flex-direction:column;
+  background:var(--navy);overflow:hidden;
+}
+#bg-skyline{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:.08;z-index:0}
+#tint{position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(184,68,43,0) 0%,rgba(184,68,43,0) 100%);transition:background .8s;pointer-events:none;z-index:1}
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;z-index:2;padding:18px;gap:12px}
+.hidden{display:none!important}
+
+/* ---- Start ---- */
+.start-wrap{justify-content:space-between;align-items:stretch;text-align:center}
+.brand{margin-top:18px}
+.brand h1{font-family:var(--font-display);font-weight:800;letter-spacing:-.02em;line-height:.92;color:var(--bone);font-size:clamp(48px,13vw,68px);text-shadow:0 2px 0 #000}
+.brand h1 .blk{color:var(--brass-2)}
+.brand .sub{margin-top:14px;color:var(--bone-2);font-size:14px;line-height:1.45;max-width:340px;margin-left:auto;margin-right:auto}
+.brand .sub b{color:var(--bone)}
+.brand .price-tag{display:inline-block;margin-top:10px;padding:4px 10px;border:1px dashed var(--line);border-radius:999px;font-family:var(--font-mono);font-size:11px;color:var(--bone-2)}
+.brand .carbon{margin-top:6px;font-family:var(--font-mono);font-size:10px;color:var(--bone-2);opacity:.7}
+.start-cta{display:flex;flex-direction:column;gap:10px;padding:0 8px}
+.btn{
+  font-family:var(--font-display);font-weight:600;font-size:18px;letter-spacing:.02em;
+  background:var(--brass);color:var(--navy);
+  padding:16px 18px;border-radius:14px;border:2px solid var(--brass-2);
+  box-shadow:0 4px 0 #000,0 6px 18px rgba(0,0,0,.3);
+  transition:transform .08s,box-shadow .08s;
+  touch-action:manipulation;min-height:54px;
+}
+.btn.alt{background:var(--navy-2);color:var(--bone);border-color:var(--brass)}
+.btn.ghost{background:transparent;color:var(--bone-2);border:1px solid var(--line);font-size:14px;padding:12px;min-height:44px}
+.btn.call{background:var(--rust);border-color:var(--rust-2);color:var(--bone)}
+.btn:active{transform:translateY(2px);box-shadow:0 2px 0 #000,0 3px 8px rgba(0,0,0,.3)}
+.brand .challenge{margin:8px auto 0;padding:8px 12px;background:rgba(240,196,74,.08);border:1px solid var(--gold);border-radius:10px;font-size:13px;color:var(--gold);max-width:340px}
+.start-foot{font-family:var(--font-mono);font-size:11px;color:var(--bone-2);opacity:.85;line-height:1.6;padding-bottom:6px}
+.start-foot a{color:var(--brass-2)}
+.mute{position:absolute;top:14px;right:14px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:rgba(0,0,0,.3);font-size:16px;z-index:5;color:var(--bone-2)}
+.voice-tog{position:absolute;top:14px;right:58px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:rgba(0,0,0,.3);font-size:16px;z-index:5;color:var(--bone-2)}
+.voice-tog.off{opacity:.4}
+
+/* ---- HUD ---- */
+.hud{display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:13px;color:var(--bone-2)}
+.hud .score{flex:1;font-family:var(--font-display);font-weight:800;font-size:26px;color:var(--gold);letter-spacing:.01em;text-shadow:0 2px 0 #000}
+.hud .score.flash{animation:flash .35s}
+@keyframes flash{0%{transform:scale(1)}40%{transform:scale(1.12);color:#fff}100%{transform:scale(1);color:var(--gold)}}
+.hud .lives{display:flex;gap:4px}
+.hud .heart{width:14px;height:14px;border-radius:3px;background:var(--rust);box-shadow:inset 0 0 0 1px rgba(0,0,0,.3)}
+.hud .heart.gone{background:var(--navy-2);opacity:.5}
+.combo{font-family:var(--font-mono);font-size:11px;color:var(--brass-2);min-width:48px;text-align:right}
+.combo b{color:var(--gold);font-weight:600}
+
+/* ---- Grid ---- */
+.grid{
+  flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr 1fr;
+  gap:10px;padding:4px;
+  border:2px solid var(--brass);border-radius:14px;background:var(--navy-2);
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.4);
+  position:relative;overflow:hidden;
+}
+.grid.glow{box-shadow:inset 0 0 0 1px rgba(0,0,0,.4),0 0 22px rgba(184,134,44,.45)}
+.house{
+  position:relative;background:var(--navy);border-radius:10px;overflow:hidden;
+  display:flex;align-items:flex-end;justify-content:center;cursor:pointer;
+  touch-action:manipulation;outline:none;
+}
+.house svg{width:100%;height:100%;display:block}
+.house .door{transition:fill .12s}
+.house.broken .door{fill:var(--rust)}
+.house.broken::after{
+  content:"";position:absolute;inset:6px;border-radius:8px;
+  border:3px solid var(--rust-2);
+  animation:pulse .55s infinite alternate;pointer-events:none;
+}
+@keyframes pulse{from{box-shadow:0 0 8px rgba(226,94,64,.4),inset 0 0 8px rgba(226,94,64,.3);opacity:.7}to{box-shadow:0 0 22px rgba(226,94,64,.85),inset 0 0 14px rgba(226,94,64,.55);opacity:1}}
+.house.boarded .door{fill:#5a3a25}
+.house.boarded::before{
+  content:"";position:absolute;left:14%;right:14%;top:48%;bottom:14%;
+  background:repeating-linear-gradient(45deg,#5a3a25,#5a3a25 6px,#7a5235 6px,#7a5235 12px);
+  border:2px solid #2a1a10;border-radius:4px;pointer-events:none;
+}
+.house .timer-ring{position:absolute;left:50%;top:30%;width:34%;aspect-ratio:1;transform:translate(-50%,-50%);pointer-events:none;opacity:0;transition:opacity .1s}
+.house.broken .timer-ring{opacity:1}
+
+/* ---- Subtitle / chatter ---- */
+.chatter{
+  min-height:54px;padding:10px 12px;
+  background:rgba(0,0,0,.45);border:1px solid var(--line);border-radius:10px;
+  font-family:var(--font-mono);font-size:13px;line-height:1.35;color:var(--bone);
+  display:flex;align-items:center;gap:10px;
+  transition:opacity .35s;
+}
+.chatter.fade{opacity:0}
+.chatter .who{color:var(--brass-2);font-weight:600;flex-shrink:0}
+.chatter .av{width:32px;height:32px;border-radius:50%;background:var(--navy-2);flex-shrink:0;display:none}
+.chatter .av.show{display:block}
+.chatter .txt{flex:1}
+
+/* ---- Particles ---- */
+.particles{position:absolute;inset:0;pointer-events:none;z-index:3;overflow:hidden}
+.p{position:absolute;border-radius:50%;will-change:transform,opacity}
+.float-text{position:absolute;font-family:var(--font-display);font-weight:800;font-size:18px;pointer-events:none;will-change:transform,opacity;text-shadow:0 2px 0 #000}
+
+/* ---- Game Over ---- */
+.go{justify-content:flex-start;gap:14px;overflow-y:auto}
+.go h2{font-family:var(--font-display);font-weight:800;font-size:32px;letter-spacing:-.01em;text-align:center;margin-top:8px}
+.go .final{font-family:var(--font-display);font-weight:800;font-size:56px;color:var(--gold);text-align:center;line-height:1;text-shadow:0 3px 0 #000}
+.go .stats{font-family:var(--font-mono);font-size:12px;color:var(--bone-2);text-align:center}
+.go .bracket{font-family:var(--font-display);font-weight:600;font-size:18px;color:var(--brass-2);text-align:center;font-style:italic}
+.go .grid-share{font-family:var(--font-mono);font-size:18px;text-align:center;line-height:1.05;letter-spacing:.04em;background:rgba(0,0,0,.35);padding:10px;border-radius:10px}
+.go .ctas{display:flex;flex-direction:column;gap:8px}
+.go .net{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:4px}
+.net .nb{flex:1;min-width:54px;max-width:80px;background:var(--navy-2);border:1px solid var(--line);border-radius:8px;padding:8px 4px;font-size:11px;color:var(--bone-2);min-height:44px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:2px}
+.net .nb .ic{font-size:18px}
+.deep{display:flex;justify-content:center;gap:24px;margin-top:8px;font-size:22px}
+.deep a{padding:8px;display:inline-block;border-radius:8px}
+.deep a:active{background:var(--navy-2)}
+.deep .hint{display:block;text-align:center;font-family:var(--font-mono);font-size:10px;color:var(--bone-2);margin-top:4px;opacity:.7}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--brass);color:var(--navy);padding:10px 16px;border-radius:999px;font-weight:600;font-size:13px;z-index:99;box-shadow:0 4px 14px rgba(0,0,0,.4);opacity:0;transition:opacity .25s}
+.toast.show{opacity:1}
+
+.shake{animation:shake .25s}
+@keyframes shake{
+  0%{transform:translate(0,0)}
+  20%{transform:translate(-6px,2px)}
+  40%{transform:translate(7px,-3px)}
+  60%{transform:translate(-4px,3px)}
+  80%{transform:translate(5px,-1px)}
+  100%{transform:translate(0,0)}
+}
+@media (prefers-reduced-motion: reduce){
+  .shake,.house.broken::after,.hud .score.flash{animation:none!important}
+}
+
+@media (min-width:481px){
+  body::before{
+    content:"";position:fixed;inset:0;background:radial-gradient(ellipse at center,#1c3550 0%,#08111c 100%);z-index:-1;
+  }
+  #app{box-shadow:0 0 60px rgba(0,0,0,.6);border-left:1px solid var(--line);border-right:1px solid var(--line)}
+}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<script>
+(function(){
+'use strict';
+
+/* =========================================================================
+   1. CONSTANTS
+   ========================================================================= */
+const PHONE='(778) 800-0769';
+const PHONE_TEL='+17788000769';
+const SITE='https://stevestongaragedoors.ca';
+const GAME_URL=SITE+'/game/';
+const SPRING_PRICE=627;
+const HOUSES=6;
+
+const PHASES=[
+  {until:10000, spawn:2200, win:3000},
+  {until:45000, spawn:1500, win:2200},
+  {until:90000, spawn:1100, win:1700},
+  {until:Infinity, spawn:850, win:1300}
+];
+const ENDGAME_FIX_THRESHOLD=25;
+const ENDGAME_SPAWN_FLOOR=600;
+const ENDGAME_WIN_FLOOR=900;
+
+const BRACKETS=[
+  {min:75000, name:'Mayor of Lulu Island',  tag:"We're hiring. Seriously."},
+  {min:50000, name:'Salmonopolis Legend',   tag:"We're hiring. Seriously."},
+  {min:25000, name:'Family on the Truck',   tag:"Steveston-grade hands."},
+  {min:10000, name:'Working Tradesman',     tag:"You'd survive on the truck."},
+  {min:3000,  name:'Weekend Warrior',       tag:"Better than a Translink commute."},
+  {min:0,     name:'Strata Volunteer',      tag:"Honestly? Call us. Like, today."}
+];
+
+/* =========================================================================
+   2. VOICE LINE LIBRARY
+   ========================================================================= */
+const LINES={
+  firstMiss:[
+    ['MIKE',"One down. Like the consumer carbon tax. Don't get cocky."],
+    ['DAVE',"That's a $627 spring you just let snap. Tick tock."],
+    ['SUNNY',"It's fine. We've all watched a strata council miss easier ones."],
+    ['RAJ',"That's the Translink of misses — late, expensive, totally avoidable."],
+    ['BAILEY',"Eby took longer to ditch the carbon tax. Pace yourself."]
+  ],
+  secondMiss:[
+    ['MIKE',"Two misses. One more and you're calling us. "+PHONE+", by the way."],
+    ['DAVE',"This is how the Canucks playoff run feels every spring."],
+    ['SUNNY',"Two down. The Coastal GasLink had fewer setbacks than this."],
+    ['RAJ',"Atmospheric river of misses incoming, looks like."],
+    ['BAILEY','Two? In Richmond we\'d call this a "soft second offer."']
+  ],
+  goSub3k:[
+    ['MIKE',"Brutal. Call us. Like, before the next AGM."],
+    ['DAVE',"That run was shorter than a BC Conservative leadership."],
+    ['SUNNY',"Don't quit your day job. Unless it's at ICBC."]
+  ],
+  go3to10:[
+    ['RAJ',"Not bad. Better than the Canada Line at 5:47pm."],
+    ['BAILEY',"Mid. Like every condo flip in Brentwood since 2022."],
+    ['MIKE',"Survived longer than the BC carbon tax. Barely."]
+  ],
+  go10to25:[
+    ['DAVE',"Solid hands. We'd let you ride shotgun in the truck."],
+    ['SUNNY',"That's working-trades premium right there."],
+    ['RAJ',"You earned more than a Surrey Uber driver makes in a shift. Probably."]
+  ],
+  go25to50:[
+    ['BAILEY',"Now you know why we don't outsource the phones."],
+    ['MIKE',"Steveston-grade. Pajo's would let you skip the line."]
+  ],
+  go50plus:[
+    ['DAVE',"We're hiring. Bring your own toque."],
+    ['SUNNY',"That's a Vancouver detached-benchmark's worth of springs. The benchmark dropped 8.3% though, so… condolences."],
+    ['RAJ',"You move faster than smoke from an Okanagan wildfire."]
+  ],
+  go75plus:[
+    ['BAILEY',"You broke the game. Like Carney broke the carbon tax on day one."],
+    ['MIKE',"Get this person a parking spot at Aberdeen Centre. The good one."]
+  ],
+  combo3:[
+    ['DAVE',"Three in a row. Don't tell the strata."],
+    ['SUNNY',"Hot streak. Like Pajo's on Salmon Fest weekend."]
+  ],
+  combo5:[
+    ['MIKE',"Five clean. That's a Garry Point sunset run."],
+    ['RAJ',"Combo. Like Aberdeen food court at 1pm."]
+  ],
+  combo10:[
+    ['BAILEY',"Ten? Okay. Showing off now."],
+    ['DAVE',"Ten in a row. Smoother than the new Mark V SkyTrain."]
+  ],
+  combo15:[
+    ['MIKE',"Fifteen. You're cooking like the Gulf Cannery in 1913."],
+    ['SUNNY',"Fifteen. We're billing this as commercial now."]
+  ],
+  fastBonus:[
+    ['RAJ',"Faster than No. 2 Road bridge at 6am."],
+    ['BAILEY',"Reflexes of a Richmond auntie at the T&T sample table."],
+    ['DAVE',"That's the speed Eby announced the carbon tax repeal."]
+  ],
+  comeback:[
+    ['MIKE',"Look at you. Comeback like the Canucks in '11. Hopefully better ending."],
+    ['SUNNY',"Two misses, still alive. That's a North Van basement-suite landlord."]
+  ],
+  idle:[
+    ['DAVE',"You stuck in Massey Tunnel traffic? Tap something."],
+    ['BAILEY',"Hello? Did Translink eat your thumb?"],
+    ['RAJ',"Doomscrolling about Smith's pipeline again? Eyes up."]
+  ],
+  replay2:[['MIKE',"Back already? Springs don't fix themselves. Neither does Vancouver real estate."]],
+  replay3:[['SUNNY',"Third game. This is officially a side hustle now."]],
+  replay5:[['DAVE',"Five plays in. You'd be making more if you just called us."]],
+  radio:[
+    ['MIKE',"Heard a guy on Bayview want $789 for two springs. We do it for $789. Coincidence."],
+    ['DAVE',"Anyone else's BC Assessment notice this year a love letter?"],
+    ['SUNNY',"Wildfire smoke season's basically a fifth season now. Cinnamon-pumpkin-Christmas-smoke-spring."],
+    ['RAJ',"Saw a teardown on Moncton listed for $2.4M. The garage door was the best part."],
+    ['BAILEY',"My buddy paid $3,800 resale for a FIFA group-stage ticket. To watch CANADA. The platform takes 30% on top."],
+    ['MIKE','Coastal First Nations said no. Smith heard "convince me harder." Classic.'],
+    ['DAVE',"Reminder: tanker ban applies to Canadian tankers only. The Americans cruise right through. Wild."],
+    ['SUNNY',"Strata wants $14,000 special levy because someone didn't read the depreciation report. Five-year cycle, people."],
+    ['RAJ',"Anyone else's basement suite tenant just IS the mortgage now?"],
+    ['BAILEY',"Recycled the carbon tax. Kept the gas price. Vibes."],
+    ['MIKE',"Once Upon a Time tourist asked me where Granny's Diner was. It's the Cannery Café. With normal pancakes."],
+    ['DAVE',"Toronto thinks they invented expensive housing. Cute."],
+    ['SUNNY','Decriminalization expired Jan 31, 2026. Now everything\'s just a "challenging public space conversation" again.'],
+    ['RAJ',"Saw a Tesla park diagonally across two stalls at Lansdowne. Returns to Vancouver in box stock."],
+    ['BAILEY',"TMX averaged 82% capacity its first year. Smith says we need ANOTHER one. Math is hard, apparently."]
+  ],
+  fix25:[['MIKE',"Twenty-five fixes. The Gulf Cannery used to do this many in a minute. Different scale, fair."]],
+  fix50:[['DAVE',"Fifty. We have to start charging stratas more on principle."]],
+  rage:[['BAILEY',"Hey. Walk it off. Get a Pajo's combo. Come back."]],
+  konami:[['SUNNY',"↑↑↓↓←→←→BA. You found the boomer cheat. Free $5,000."]],
+  morning:[['RAJ',"Morning rush. Massey's already a parking lot. Hope your call's local."]],
+  late:[['MIKE',"You up at this hour? Garage door broken? Call us in the morning. We sleep too."]],
+  salmonFest:[['DAVE',"Salmon Fest week. We're still answering. Fireworks don't fix springs."]],
+  storybrooke:[['MIKE',"That's the Once Upon a Time house. Tourists stand outside taking selfies. Fix your door, Henry."]],
+  pajos:[['DAVE',"That one's on Pajo's. (Not really. Pajo's never gives anything for free.)"]],
+  beatChallenge:[['BAILEY',"You beat them. Send this back. Twist the knife."]]
+};
+
+const RECENT={};
+function pick(cat){
+  const arr=LINES[cat]; if(!arr||!arr.length) return null;
+  if(!RECENT[cat]) RECENT[cat]=[];
+  const recent=RECENT[cat];
+  const pool=arr.filter((_,i)=>recent.indexOf(i)<0);
+  const useArr=pool.length?pool:arr;
+  const useIdx=arr.indexOf(useArr[Math.floor(Math.random()*useArr.length)]);
+  recent.push(useIdx);
+  while(recent.length>Math.min(6,arr.length-1)) recent.shift();
+  return arr[useIdx];
+}
+
+/* =========================================================================
+   3. AUDIO ENGINE
+   ========================================================================= */
+let actx=null, masterGain=null;
+let muted = ls('sgd_muted')==='1';
+
+function audioInit(){
+  if(actx) return;
+  try{
+    const C=window.AudioContext||window.webkitAudioContext;
+    if(!C) return;
+    actx=new C();
+    masterGain=actx.createGain();
+    masterGain.gain.value=muted?0:0.35;
+    masterGain.connect(actx.destination);
+  }catch(e){actx=null}
+}
+function setMuted(m){
+  muted=m;
+  ls('sgd_muted',m?'1':'0');
+  if(masterGain) masterGain.gain.value=m?0:0.35;
+  if(m) speechStop();
+}
+function env(node,attack,release,peak){
+  const t=actx.currentTime;
+  node.gain.setValueAtTime(0,t);
+  node.gain.linearRampToValueAtTime(peak,t+attack);
+  node.gain.linearRampToValueAtTime(0,t+attack+release);
+}
+function tone(freqStart,freqEnd,dur,type,gain,destination){
+  if(!actx) return;
+  const osc=actx.createOscillator();
+  const g=actx.createGain();
+  osc.type=type||'sine';
+  osc.frequency.setValueAtTime(freqStart,actx.currentTime);
+  if(freqEnd!=null) osc.frequency.exponentialRampToValueAtTime(Math.max(20,freqEnd),actx.currentTime+dur);
+  env(g,0.005,dur,gain);
+  osc.connect(g).connect(destination||masterGain);
+  osc.start();
+  osc.stop(actx.currentTime+dur+0.05);
+  return osc;
+}
+function sndFix(){
+  if(!actx)return;
+  tone(880,1320,0.06,'square',0.25);
+  tone(200,200,0.08,'sine',0.15);
+}
+function sndBonus(){
+  if(!actx)return;
+  [1046,1318,1568].forEach((f,i)=>{
+    setTimeout(()=>tone(f,f,0.05,'sawtooth',0.22), i*50);
+  });
+}
+function sndMiss(){
+  if(!actx)return;
+  const t=actx.currentTime;
+  const o=actx.createOscillator();
+  const g=actx.createGain();
+  const filt=actx.createBiquadFilter();
+  filt.type='bandpass';filt.Q.value=4;
+  filt.frequency.setValueAtTime(800,t);
+  filt.frequency.exponentialRampToValueAtTime(200,t+0.22);
+  o.type='sawtooth';
+  o.frequency.setValueAtTime(220,t);
+  o.frequency.exponentialRampToValueAtTime(110,t+0.22);
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(0.4,t+0.005);
+  g.gain.exponentialRampToValueAtTime(0.001,t+0.22);
+  o.connect(filt).connect(g).connect(masterGain);
+  o.start();o.stop(t+0.25);
+}
+function sndCombo(level){
+  if(!actx)return;
+  const base=261.63*Math.pow(2,Math.min(24,level*2)/12);
+  [base,base*1.25,base*1.5,base*2].forEach((f,i)=>{
+    setTimeout(()=>tone(f,f,0.06,'square',0.18),i*20);
+  });
+}
+function sndGameOver(){
+  if(!actx)return;
+  const notes=[440,349.23,293.66,220];
+  notes.forEach((f,i)=>setTimeout(()=>tone(f,f,0.18,'sine',0.4),i*220));
+  tone(60,60,1.4,'sine',0.1);
+}
+function sndShare(){
+  if(!actx)return;
+  [440,880,1760].forEach(f=>tone(f,f,0.6,'sine',0.15));
+}
+
+/* ---- Web Speech (per-persona voices) ---- */
+const SS = ('speechSynthesis' in window) ? window.speechSynthesis : null;
+let speechEnabled = ls('sgd_speech')!=='0'; // on by default
+let voiceMap = {}; // persona -> SpeechSynthesisVoice
+let voicesReady = false;
+
+// Pitch/rate per persona — varies even when one voice has to cover multiple personas.
+const PERSONA_PROFILE = {
+  MIKE:   {pitch:0.78, rate:1.00, pref:['male']},
+  DAVE:   {pitch:0.95, rate:1.05, pref:['male']},
+  SUNNY:  {pitch:1.00, rate:1.05, pref:['female']},
+  RAJ:    {pitch:1.05, rate:1.12, pref:['male']},
+  BAILEY: {pitch:1.18, rate:1.02, pref:['female']}
+};
+
+// Heuristic: classify a voice as 'male' / 'female' / 'unknown' by name.
+const FEMALE_HINTS = /(female|samantha|karen|moira|tessa|fiona|victoria|allison|ava|susan|zira|hazel|catherine|serena|amelie|amy|nicole|kate|sara|emma|joanna|salli|kendra|kimberly|ivy|aria|jenny|clara|libby|sonia|vicki|alex.*female|google.*female|microsoft.*(zira|hazel|aria|jenny|clara|libby|sonia)|google uk english female|google us english.*female)/i;
+const MALE_HINTS   = /(male|daniel|fred|alex|tom|aaron|arthur|bruce|oliver|brian|matthew|justin|joey|kevin|mark|david|guy|ryan|george|liam|google.*male|microsoft.*(david|mark|guy|ryan|george)|google uk english male|google us english.*male)/i;
+
+function voiceGender(v){
+  const n=(v.name||'')+' '+(v.voiceURI||'');
+  if(FEMALE_HINTS.test(n)) return 'female';
+  if(MALE_HINTS.test(n)) return 'male';
+  return 'unknown';
+}
+
+function pickVoices(){
+  if(!SS) return;
+  const all = SS.getVoices();
+  if(!all || !all.length) return;
+  // Prefer en-CA, en-US, en-GB, then any English
+  const en = all.filter(v=>/^en[-_]/i.test(v.lang||'')).sort((a,b)=>{
+    const score=v=>(/^en[-_]CA/i.test(v.lang)?0:/^en[-_]US/i.test(v.lang)?1:/^en[-_]GB/i.test(v.lang)?2:3);
+    return score(a)-score(b);
+  });
+  const pool = en.length?en:all;
+
+  const males   = pool.filter(v=>voiceGender(v)==='male');
+  const females = pool.filter(v=>voiceGender(v)==='female');
+  const unknown = pool.filter(v=>voiceGender(v)==='unknown');
+
+  function take(list, idx, fallback){
+    if(list.length) return list[idx % list.length];
+    return fallback || pool[0] || null;
+  }
+  voiceMap = {
+    MIKE:   take(males,   0, take(unknown,0)),
+    DAVE:   take(males,   1, take(unknown,1)),
+    RAJ:    take(males,   2, take(unknown,2)),
+    SUNNY:  take(females, 0, take(unknown,0)),
+    BAILEY: take(females, 1, take(unknown,1))
+  };
+  voicesReady = true;
+}
+
+if(SS){
+  // voices may load async
+  pickVoices();
+  SS.addEventListener && SS.addEventListener('voiceschanged', pickVoices);
+  // Some browsers (mobile Safari) need a poll
+  let tries=0;
+  const poll=setInterval(()=>{
+    if(voicesReady || tries++>20){clearInterval(poll); return}
+    pickVoices();
+  },250);
+}
+
+function speak(persona, text){
+  if(!SS || muted || !speechEnabled) return;
+  try{
+    SS.cancel(); // interrupt prior line — matches the "no queue" rule
+    const u = new SpeechSynthesisUtterance(text);
+    const prof = PERSONA_PROFILE[persona] || {pitch:1, rate:1};
+    u.pitch = prof.pitch;
+    u.rate  = prof.rate;
+    u.volume = 0.95;
+    if(!voicesReady) pickVoices();
+    if(voiceMap[persona]) u.voice = voiceMap[persona];
+    u.lang = (u.voice && u.voice.lang) || 'en-CA';
+    SS.speak(u);
+  }catch(e){/* swallow — speech is enhancement, not core */}
+}
+function speechStop(){ try{ SS && SS.cancel() }catch(e){} }
+function primeSpeech(){
+  // iOS Safari requires SpeechSynthesis to be invoked from inside a user gesture
+  // before it'll speak later (similar to AudioContext). Fire a silent utterance.
+  if(!SS) return;
+  try{
+    const u=new SpeechSynthesisUtterance(' ');
+    u.volume=0; u.rate=1; u.pitch=1;
+    SS.speak(u);
+  }catch(e){}
+}
+function setSpeechEnabled(on){
+  speechEnabled = !!on;
+  ls('sgd_speech', on?'1':'0');
+  if(!on) speechStop();
+}
+
+/* =========================================================================
+   4. STATE MACHINE & STORAGE
+   ========================================================================= */
+function ls(k,v){
+  try{
+    if(v===undefined) return localStorage.getItem(k);
+    localStorage.setItem(k,v); return v;
+  }catch(e){return null}
+}
+function lsRm(k){try{localStorage.removeItem(k)}catch(e){}}
+function track(event,data){ /* no-op; user can wire Plausible/GA4 here */ }
+
+const state={
+  screen:'start', // 'start' | 'play' | 'over'
+  endless:true,
+  daily:false,
+  startTs:0,
+  score:0,
+  fixes:0,
+  misses:0,
+  combo:0,
+  longestCombo:0,
+  fastest:Infinity,
+  missTimeline:[], // ms since start
+  houses:[], // {el, broken, brokenAt, repairWin}
+  spawnTimer:0,
+  lastTapAt:0,
+  konamiUsed:false,
+  familyMode:false,
+  rngSeed:1,
+  comebackArmed:false,
+  comebackCounter:0,
+  recentMisses:[],
+  beatTarget:null,
+  beatBy:null,
+  playNumber: parseInt(ls('sgd_plays')||'0',10)+1,
+  highScore: parseInt(ls('sgd_high')||'0',10),
+  initials: ls('sgd_initials')||''
+};
+
+function rngSeed(s){state.rngSeed=s>>>0; if(state.rngSeed===0) state.rngSeed=1}
+function rng(){
+  let x=state.rngSeed|0;
+  x^=x<<13; x^=x>>>17; x^=x<<5;
+  state.rngSeed=x>>>0;
+  return ((x>>>0)%10000)/10000;
+}
+function dailySeedString(){
+  const d=new Date();
+  return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+}
+function dailyHash(s){
+  let h=2166136261;
+  for(let i=0;i<s.length;i++){h^=s.charCodeAt(i); h=Math.imul(h,16777619)}
+  return h>>>0;
+}
+function dayNumber(){
+  const epoch=new Date('2026-01-01').getTime();
+  return Math.floor((Date.now()-epoch)/86400000)+1;
+}
+
+/* =========================================================================
+   5. RENDERER
+   ========================================================================= */
+const app=document.getElementById('app');
+
+const SVG_BG=`<svg id="bg-skyline" viewBox="0 0 480 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+<g fill="#B8862C">
+<path d="M0,560 L40,540 L80,555 L120,545 L160,560 L240,540 L320,555 L400,548 L480,560 L480,800 L0,800 Z" opacity=".5"/>
+<path d="M0,640 L60,620 L100,635 L160,625 L220,640 L280,628 L340,640 L420,632 L480,648 L480,800 L0,800 Z" opacity=".7"/>
+</g>
+<g stroke="#B8862C" stroke-width="2" fill="none" opacity=".55">
+  <line x1="60" y1="640" x2="60" y2="500"/><line x1="62" y1="500" x2="68" y2="510"/>
+  <line x1="180" y1="635" x2="180" y2="480"/><line x1="178" y1="490" x2="188" y2="500"/>
+  <line x1="300" y1="640" x2="300" y2="510"/><line x1="298" y1="510" x2="308" y2="520"/>
+  <line x1="410" y1="638" x2="410" y2="495"/><line x1="408" y1="500" x2="418" y2="510"/>
+</g>
+<path d="M0,560 L40,548 L80,560 L160,540 L260,558 L340,545 L420,560 L480,548" stroke="#B8862C" stroke-width="1" fill="none" opacity=".4"/>
+</svg>`;
+
+function houseSVG(){
+  return `<svg viewBox="0 0 100 110" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+    <rect x="8" y="38" width="84" height="62" fill="#1A2B40" stroke="#B8862C" stroke-width="1.5"/>
+    <polygon points="4,40 50,8 96,40" fill="#1A2B40" stroke="#B8862C" stroke-width="1.5"/>
+    <rect x="14" y="46" width="14" height="14" fill="#0F1D2E" stroke="#B8862C" stroke-width="1"/>
+    <rect x="72" y="46" width="14" height="14" fill="#0F1D2E" stroke="#B8862C" stroke-width="1"/>
+    <line x1="21" y1="46" x2="21" y2="60" stroke="#B8862C" stroke-width=".6"/>
+    <line x1="14" y1="53" x2="28" y2="53" stroke="#B8862C" stroke-width=".6"/>
+    <line x1="79" y1="46" x2="79" y2="60" stroke="#B8862C" stroke-width=".6"/>
+    <line x1="72" y1="53" x2="86" y2="53" stroke="#B8862C" stroke-width=".6"/>
+    <rect class="door" x="34" y="62" width="32" height="38" fill="#B8862C" stroke="#0F1D2E" stroke-width="1.5"/>
+    <line x1="34" y1="71" x2="66" y2="71" stroke="#0F1D2E" stroke-width=".6" opacity=".6"/>
+    <line x1="34" y1="80" x2="66" y2="80" stroke="#0F1D2E" stroke-width=".6" opacity=".6"/>
+    <line x1="34" y1="89" x2="66" y2="89" stroke="#0F1D2E" stroke-width=".6" opacity=".6"/>
+    <circle cx="50" cy="95" r="1.4" fill="#0F1D2E"/>
+  </svg>`;
+}
+
+function renderStart(){
+  state.screen='start';
+  app.innerHTML=`
+    ${SVG_BG}
+    <div id="tint"></div>
+    <button class="mute" id="mute" aria-label="Toggle sound">${muted?'🔇':'🔊'}</button>
+    <button class="voice-tog ${speechEnabled?'':'off'}" id="vtog" aria-label="Toggle voice chatter" title="Voice chatter">🗣️</button>
+    <div class="screen start-wrap">
+      <div class="brand">
+        <h1 id="title">FIX <span class="blk">THE</span> BLOCK</h1>
+        <div class="sub">A garage-door reflex game from <b>Steveston Garage Doors</b>.<br>
+          Six houses. Three lives. <b>Each fix = $${SPRING_PRICE}.</b><br>
+          <span style="opacity:.7">Don't ask why $${SPRING_PRICE}. (Read the truck.)</span>
+        </div>
+        <div class="price-tag">${PHONE} • Richmond, BC</div>
+        <div class="carbon">Carbon tax: $0.00 since April 1, 2025</div>
+        ${state.beatTarget?`<div class="challenge">⚡ ${escapeHtml(state.beatBy||'Someone')} challenged you to beat $${fmt(state.beatTarget)}. You in?</div>`:''}
+      </div>
+      <div class="start-cta">
+        <button class="btn" id="play-endless">🔧 PLAY ENDLESS</button>
+        <button class="btn alt" id="play-daily">🌊 DAILY CHALLENGE</button>
+        ${state.highScore?`<button class="btn ghost" id="reset-hs">High score: $${fmt(state.highScore)} · reset</button>`:''}
+      </div>
+      <div class="start-foot">
+        The family on the truck answers the phone.<br>
+        <a href="tel:${PHONE_TEL}">${PHONE}</a> • <a href="${SITE}">stevestongaragedoors.ca</a>
+      </div>
+    </div>
+  `;
+  document.getElementById('mute').addEventListener('pointerdown',e=>{e.preventDefault();audioInit();setMuted(!muted);e.currentTarget.textContent=muted?'🔇':'🔊'});
+  bindVoiceToggle();
+  document.getElementById('play-endless').addEventListener('pointerdown',e=>{e.preventDefault();audioInit();primeSpeech();state.daily=false;startGame()});
+  document.getElementById('play-daily').addEventListener('pointerdown',e=>{e.preventDefault();audioInit();primeSpeech();state.daily=true;startGame()});
+  const rb=document.getElementById('reset-hs');
+  if(rb) rb.addEventListener('pointerdown',e=>{e.preventDefault(); if(confirm('Reset local high score?')){lsRm('sgd_high'); state.highScore=0; renderStart()}});
+
+  // Logo tap easter egg → Family Mode
+  let logoTaps=0,logoTimer=null;
+  document.getElementById('title').addEventListener('pointerdown',()=>{
+    logoTaps++;
+    clearTimeout(logoTimer);
+    logoTimer=setTimeout(()=>logoTaps=0,2500);
+    if(logoTaps>=10){
+      state.familyMode=true;
+      logoTaps=0;
+      showToast('Family Mode unlocked 🧒');
+    }
+  });
+}
+
+function renderPlay(){
+  state.screen='play';
+  app.innerHTML=`
+    ${SVG_BG}
+    <div id="tint"></div>
+    <button class="mute" id="mute" aria-label="Toggle sound">${muted?'🔇':'🔊'}</button>
+    <button class="voice-tog ${speechEnabled?'':'off'}" id="vtog" aria-label="Toggle voice chatter" title="Voice chatter">🗣️</button>
+    <div class="screen" id="play-screen">
+      <div class="hud">
+        <div class="score" id="score">$0</div>
+        <div class="combo" id="combo"></div>
+        <div class="lives" id="lives">
+          <div class="heart"></div><div class="heart"></div><div class="heart"></div>
+        </div>
+      </div>
+      <div class="grid" id="grid">
+        ${Array.from({length:HOUSES}).map((_,i)=>`<button class="house" data-i="${i}" aria-label="House ${i+1}">${houseSVG()}</button>`).join('')}
+        <div class="particles" id="particles"></div>
+      </div>
+      <div class="chatter" id="chatter"><span class="who" id="who"></span><span class="txt" id="txt"></span></div>
+    </div>
+  `;
+  document.getElementById('mute').addEventListener('pointerdown',e=>{e.preventDefault();setMuted(!muted);e.currentTarget.textContent=muted?'🔇':'🔊'});
+  bindVoiceToggle();
+  state.houses=Array.from(document.querySelectorAll('.house')).map(el=>({el,broken:false,brokenAt:0,repairWin:0,boardedUntil:0,timer:null}));
+  state.houses.forEach((h,i)=>{
+    h.el.addEventListener('pointerdown',ev=>{ev.preventDefault();onTap(i)},{passive:false});
+  });
+  document.getElementById('grid').addEventListener('pointerdown',()=>{state.lastTapAt=performance.now()});
+}
+
+function renderGameOver(){
+  state.screen='over';
+  const dur=performance.now()-state.startTs;
+  const bracket=BRACKETS.find(b=>state.score>=b.min);
+  const grid=buildEmojiGrid(dur);
+  const dayNo=dayNumber();
+  const block=`FIX THE BLOCK 🔧 Day ${dayNo}\n$${fmt(state.score)} | ${state.fixes} fixes | ${state.misses} misses | ${state.longestCombo}x combo\n\n${grid}\n\n🇨🇦 ${bracket.tag}\n👉 ${GAME_URL.replace('https://','')}\n📞 ${PHONE}`;
+  const isHigh=state.score>state.highScore;
+  if(isHigh){state.highScore=state.score; ls('sgd_high',state.score)}
+
+  let shareUrl=GAME_URL;
+  if(isHigh && state.score>0){
+    let initials=state.initials;
+    if(!initials){
+      try{ initials=(prompt('New high score! Initials? (max 6, optional)')||'').slice(0,6).replace(/[^a-zA-Z0-9-]/g,''); }catch(e){initials=''}
+      if(initials){state.initials=initials; ls('sgd_initials',initials)}
+    }
+    shareUrl=GAME_URL+'?beat='+state.score+(initials?'&by='+encodeURIComponent(initials):'');
+  }
+
+  app.innerHTML=`
+    ${SVG_BG}
+    <div id="tint"></div>
+    <button class="mute" id="mute" aria-label="Toggle sound">${muted?'🔇':'🔊'}</button>
+    <button class="voice-tog ${speechEnabled?'':'off'}" id="vtog" aria-label="Toggle voice chatter" title="Voice chatter">🗣️</button>
+    <div class="screen go" id="go">
+      <h2>GAME OVER</h2>
+      <div class="final">$${fmt(state.score)}</div>
+      <div class="stats">${state.fixes} fixes • ${state.misses} misses • ${state.longestCombo}x combo<br>
+      ${state.fastest<Infinity?'Fastest fix: '+Math.round(state.fastest)+'ms':'No fixes recorded'}</div>
+      <div class="bracket">${escapeHtml(bracket.name)} — ${escapeHtml(bracket.tag)}</div>
+      <div class="grid-share" id="grid-share">${grid.split('\n').map(escapeHtml).join('<br>')}</div>
+      <div class="ctas">
+        <a class="btn call" href="tel:${PHONE_TEL}" id="cta-call">📞 ${PHONE} — TAP TO CALL</a>
+        <button class="btn" id="share-btn">🔗 SHARE YOUR SCORE</button>
+        <button class="btn alt" id="play-again">🔧 PLAY AGAIN</button>
+      </div>
+      <div class="net" id="net">
+        <button class="nb" data-n="sms"><span class="ic">💬</span>SMS</button>
+        <button class="nb" data-n="whatsapp"><span class="ic">📱</span>WhatsApp</button>
+        <button class="nb" data-n="x"><span class="ic">𝕏</span>Twitter</button>
+        <button class="nb" data-n="facebook"><span class="ic">f</span>Facebook</button>
+        <button class="nb" data-n="reddit"><span class="ic">🟠</span>Reddit</button>
+        <button class="nb" data-n="linkedin"><span class="ic">in</span>LinkedIn</button>
+        <button class="nb" data-n="instagram"><span class="ic">📸</span>IG</button>
+        <button class="nb" data-n="copy"><span class="ic">📋</span>Copy</button>
+      </div>
+      <div class="deep">
+        <a href="${SITE}/residential-spring-repair/" data-deep="spring" title="Spring repair">🔧</a>
+        <a href="${SITE}/residential-garage-door-openers/" data-deep="opener" title="Openers">⚙️</a>
+        <a href="${SITE}/strata/" data-deep="strata" title="Strata">🚪</a>
+        <span class="hint">these are real services. tap one.</span>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('mute').addEventListener('pointerdown',e=>{e.preventDefault();setMuted(!muted);e.currentTarget.textContent=muted?'🔇':'🔊'});
+  bindVoiceToggle();
+  document.getElementById('cta-call').addEventListener('click',()=>track('tap_to_call'));
+  document.getElementById('play-again').addEventListener('pointerdown',e=>{e.preventDefault();track('replay',{playNumber:state.playNumber+1});resetGameState();renderStart()});
+  document.getElementById('share-btn').addEventListener('pointerdown',e=>{e.preventDefault();shareScore(block,shareUrl)});
+  document.querySelectorAll('.nb').forEach(b=>{
+    b.addEventListener('pointerdown',e=>{e.preventDefault();shareNetwork(b.dataset.n,block,shareUrl)});
+  });
+  document.querySelectorAll('.deep a').forEach(a=>{
+    a.addEventListener('click',()=>track('deep_link_clicked',{slug:a.dataset.deep}));
+  });
+
+  // pick game-over voice line
+  let cat='goSub3k';
+  if(state.score>=75000) cat='go75plus';
+  else if(state.score>=50000) cat='go50plus';
+  else if(state.score>=25000) cat='go25to50';
+  else if(state.score>=10000) cat='go10to25';
+  else if(state.score>=3000) cat='go3to10';
+
+  // Storybrooke easter egg: 3 misses on house index 1 (top-right)
+  const sbMisses = state.recentMisses.filter(m=>m.h===1).length;
+  if(sbMisses>=3) cat='storybrooke';
+
+  // High-score confetti
+  if(isHigh && state.score>0) confettiBurst();
+
+  setTimeout(()=>say(cat),400);
+  sndGameOver();
+  track('game_over',{score:state.score,fixes:state.fixes,misses:state.misses,longestCombo:state.longestCombo,durationMs:Math.round(dur)});
+}
+
+/* =========================================================================
+   6. GAME LOOP & INPUT
+   ========================================================================= */
+let rafId=null, lastFrame=0, idleTimer=0, radioTimer=0;
+
+function startGame(){
+  resetGameState();
+  state.startTs=performance.now();
+  if(state.daily){
+    rngSeed(dailyHash(dailySeedString()));
+    track('daily_played');
+  } else {
+    rngSeed((Date.now()^Math.floor(Math.random()*1e9))>>>0);
+  }
+  ls('sgd_plays', state.playNumber);
+  renderPlay();
+
+  // initial line
+  setTimeout(()=>{
+    say('radio');
+    if(state.playNumber===2) say('replay2');
+    else if(state.playNumber===3) say('replay3');
+    else if(state.playNumber>=5) say('replay5');
+    const h=new Date().getHours();
+    if(h>=6 && h<=8) setTimeout(()=>say('morning'),3000);
+    if(h>=23 || h<5) setTimeout(()=>say('late'),3000);
+    const d=new Date(); if(d.getMonth()===5 && d.getDate()>=24 && d.getDate()<=30) setTimeout(()=>say('salmonFest'),5500);
+  },350);
+
+  if(state.beatTarget) showToast('Beat $'+fmt(state.beatTarget)+' to win the challenge.');
+
+  lastFrame=performance.now();
+  idleTimer=0; radioTimer=0; state.spawnTimer=0;
+  rafId=requestAnimationFrame(loop);
+  track('play_start');
+}
+
+function resetGameState(){
+  if(rafId){cancelAnimationFrame(rafId);rafId=null}
+  state.score=0; state.fixes=0; state.misses=0;
+  state.combo=0; state.longestCombo=0; state.fastest=Infinity;
+  state.missTimeline=[]; state.spawnTimer=0;
+  state.lastTapAt=0; state.konamiUsed=false;
+  state.comebackArmed=false; state.comebackCounter=0;
+  state.recentMisses=[];
+  state.playNumber++;
+}
+
+function loop(now){
+  const dt=now-lastFrame; lastFrame=now;
+  const elapsed=now-state.startTs;
+  const phase=PHASES.find(p=>elapsed<p.until);
+
+  // endgame ramp
+  let spawnEvery=phase.spawn, win=phase.win;
+  if(state.fixes>=ENDGAME_FIX_THRESHOLD){
+    const steps=Math.floor((state.fixes-ENDGAME_FIX_THRESHOLD)/5);
+    spawnEvery=Math.max(ENDGAME_SPAWN_FLOOR, phase.spawn-25*(steps+1));
+    win=Math.max(ENDGAME_WIN_FLOOR, phase.win-50*(steps+1));
+  }
+
+  // Inferno tint
+  const tint=document.getElementById('tint');
+  if(tint){
+    if(elapsed>=90000){
+      tint.style.background='radial-gradient(ellipse at center,rgba(184,68,43,.12) 0%,rgba(184,68,43,.04) 100%)';
+    } else tint.style.background='radial-gradient(ellipse at center,rgba(184,68,43,0) 0%,rgba(184,68,43,0) 100%)';
+  }
+
+  // spawn
+  state.spawnTimer+=dt;
+  if(state.spawnTimer>=spawnEvery){
+    state.spawnTimer=0;
+    trySpawn(win);
+  }
+
+  // expire broken doors
+  for(let i=0;i<state.houses.length;i++){
+    const h=state.houses[i];
+    if(h.broken && now-h.brokenAt>=h.repairWin){
+      doMiss(i);
+    }
+    if(h.boardedUntil && now>=h.boardedUntil){
+      h.boardedUntil=0;
+      h.el.classList.remove('boarded');
+    }
+  }
+
+  // idle detection
+  if(state.houses.some(h=>h.broken)){
+    idleTimer+=dt;
+    if(idleTimer>4000){idleTimer=0; say('idle')}
+  } else idleTimer=0;
+
+  // radio chatter ambient
+  radioTimer+=dt;
+  if(radioTimer>(6000+Math.random()*4000) && !state.houses.some(h=>h.broken && now-h.brokenAt<400)){
+    radioTimer=0;
+    if(Math.random()<0.5) say('radio');
+  }
+
+  if(state.misses<3) rafId=requestAnimationFrame(loop);
+}
+
+function trySpawn(win){
+  const brokenCount=state.houses.filter(h=>h.broken).length;
+  if(brokenCount>=3) return;
+  const candidates=state.houses.map((h,i)=>({h,i})).filter(x=>!x.h.broken && !x.h.boardedUntil);
+  if(!candidates.length) return;
+  const pickIdx=Math.floor(rng()*candidates.length);
+  const target=candidates[pickIdx];
+  target.h.broken=true;
+  target.h.brokenAt=performance.now();
+  target.h.repairWin=win;
+  target.h.el.classList.add('broken');
+}
+
+function onTap(i){
+  const h=state.houses[i];
+  if(state.misses>=3) return;
+  if(!h.broken){
+    // mistap - small penalty? per spec just no effect
+    return;
+  }
+  const now=performance.now();
+  const reactT=now-h.brokenAt;
+  h.broken=false;
+  h.el.classList.remove('broken');
+
+  let gain=SPRING_PRICE;
+  let fast=reactT<700;
+  if(fast) gain+=200;
+  state.combo++;
+  if(state.combo>state.longestCombo) state.longestCombo=state.combo;
+  if(state.combo>1) gain+=50*state.combo;
+
+  state.score+=gain;
+  state.fixes++;
+  if(reactT<state.fastest) state.fastest=reactT;
+
+  flashScore();
+  particleBurst(h.el, fast?'gold':'brass');
+  if(fast){
+    floatText(h.el,'+$200',true);
+    sndBonus();
+    say('fastBonus');
+  } else {
+    sndFix();
+  }
+
+  // combo ring
+  if(state.combo>=2){
+    comboRing(h.el);
+    sndCombo(state.combo);
+  }
+  if(state.combo===3) say('combo3');
+  else if(state.combo===5) say('combo5');
+  else if(state.combo===10) say('combo10');
+  else if(state.combo===15) say('combo15');
+  if(state.combo>=10) confettiSmall();
+
+  // Aberdeen ripple on daily 15+ combo
+  if(state.daily && state.combo===15){
+    const grid=document.getElementById('grid');
+    if(grid){grid.classList.add('glow'); setTimeout(()=>grid.classList.remove('glow'),900)}
+  }
+
+  // Pajo's
+  if(state.fixes%13===0) {floatText(h.el,'🐟',false); say('pajos')}
+  if(state.fixes===25) say('fix25');
+  if(state.fixes===50) say('fix50');
+
+  // Comeback
+  if(state.misses===2 && !state.comebackArmed){state.comebackArmed=true; state.comebackCounter=0}
+  if(state.comebackArmed){
+    state.comebackCounter++;
+    if(state.comebackCounter>=5){state.comebackArmed=false; say('comeback')}
+  }
+
+  // beat-challenge target hit
+  if(state.beatTarget && state.score>state.beatTarget){
+    say('beatChallenge');
+    state.beatTarget=null;
+  }
+
+  updateHUD();
+}
+
+function doMiss(i){
+  const h=state.houses[i];
+  if(!h.broken) return;
+  h.broken=false;
+  h.el.classList.remove('broken');
+  h.el.classList.add('boarded');
+  h.boardedUntil=performance.now()+8000;
+  state.misses++;
+  state.combo=0;
+  state.missTimeline.push(performance.now()-state.startTs);
+  state.recentMisses.push({h:i,t:performance.now()});
+  // rage detection
+  if(state.recentMisses.length>=5){
+    const last5=state.recentMisses.slice(-5);
+    if((last5[4].t-last5[0].t)<8000) say('rage');
+  }
+  if(state.comebackArmed){state.comebackCounter=0}
+
+  sndMiss();
+  shake();
+  if(state.misses===1) say('firstMiss');
+  else if(state.misses===2) say('secondMiss');
+  updateHUD();
+
+  if(state.misses>=3){
+    setTimeout(endGame,500);
+  }
+}
+
+function endGame(){
+  if(rafId){cancelAnimationFrame(rafId); rafId=null}
+  renderGameOver();
+}
+
+function updateHUD(){
+  const s=document.getElementById('score'); if(s) s.textContent='$'+fmt(state.score);
+  const c=document.getElementById('combo'); if(c) c.innerHTML=state.combo>1?`combo <b>x${state.combo}</b>`:'';
+  const lv=document.getElementById('lives');
+  if(lv){
+    const hearts=lv.querySelectorAll('.heart');
+    hearts.forEach((h,i)=>{h.classList.toggle('gone', i<state.misses)});
+  }
+}
+function flashScore(){
+  const s=document.getElementById('score'); if(!s) return;
+  s.classList.remove('flash'); void s.offsetWidth; s.classList.add('flash');
+}
+function shake(){
+  const sc=document.getElementById('play-screen'); if(!sc) return;
+  sc.classList.remove('shake'); void sc.offsetWidth; sc.classList.add('shake');
+}
+
+/* =========================================================================
+   7. PARTICLES & FX
+   ========================================================================= */
+function particleBurst(houseEl, kind){
+  const p=document.getElementById('particles'); if(!p) return;
+  const r=houseEl.getBoundingClientRect();
+  const pr=p.getBoundingClientRect();
+  const cx=r.left-pr.left+r.width/2;
+  const cy=r.top-pr.top+r.height*0.7;
+  const count=kind==='gold'?12:6;
+  const colors=kind==='gold'?['#F0C44A','#D9A848','#F4EDE0']:['#B8862C','#D9A848'];
+  for(let i=0;i<count;i++){
+    const el=document.createElement('div');
+    el.className='p';
+    el.style.cssText=`left:${cx}px;top:${cy}px;width:6px;height:6px;background:${colors[i%colors.length]};opacity:1;`;
+    p.appendChild(el);
+    const ang=Math.random()*Math.PI*2, spd=60+Math.random()*120;
+    const vx=Math.cos(ang)*spd, vy=Math.sin(ang)*spd-80;
+    const start=performance.now(), life=600;
+    (function anim(){
+      const t=(performance.now()-start)/life;
+      if(t>=1){el.remove();return}
+      const x=vx*t, y=vy*t+200*t*t;
+      el.style.transform=`translate(${x}px,${y}px)`;
+      el.style.opacity=String(1-t);
+      requestAnimationFrame(anim);
+    })();
+  }
+}
+function comboRing(houseEl){
+  const p=document.getElementById('particles'); if(!p) return;
+  const r=houseEl.getBoundingClientRect();
+  const pr=p.getBoundingClientRect();
+  const el=document.createElement('div');
+  el.style.cssText=`position:absolute;left:${r.left-pr.left}px;top:${r.top-pr.top}px;width:${r.width}px;height:${r.height}px;border:3px solid var(--brass-2);border-radius:10px;pointer-events:none;will-change:transform,opacity`;
+  p.appendChild(el);
+  const start=performance.now(), life=500;
+  (function anim(){
+    const t=(performance.now()-start)/life;
+    if(t>=1){el.remove();return}
+    const s=1+0.6*t;
+    el.style.transform=`scale(${s})`;
+    el.style.opacity=String(1-t);
+    requestAnimationFrame(anim);
+  })();
+}
+function floatText(houseEl,text,gold){
+  const p=document.getElementById('particles'); if(!p) return;
+  const r=houseEl.getBoundingClientRect();
+  const pr=p.getBoundingClientRect();
+  const el=document.createElement('div');
+  el.className='float-text';
+  el.textContent=text;
+  el.style.cssText+=`left:${r.left-pr.left+r.width/2-20}px;top:${r.top-pr.top+r.height*0.5}px;color:${gold?'#F0C44A':'#F4EDE0'};opacity:1;`;
+  p.appendChild(el);
+  const start=performance.now(), life=900;
+  (function anim(){
+    const t=(performance.now()-start)/life;
+    if(t>=1){el.remove();return}
+    el.style.transform=`translateY(${-50*t}px)`;
+    el.style.opacity=String(1-t);
+    requestAnimationFrame(anim);
+  })();
+}
+function confettiSmall(){
+  // mini multi-color burst near top
+  const p=document.getElementById('particles'); if(!p) return;
+  const colors=['#B8862C','#B8442B','#F4EDE0','#F0C44A'];
+  const w=p.getBoundingClientRect().width;
+  for(let i=0;i<30;i++){
+    const el=document.createElement('div');
+    el.className='p';
+    el.style.cssText=`left:${Math.random()*w}px;top:0;width:6px;height:8px;background:${colors[i%4]};opacity:1;`;
+    p.appendChild(el);
+    const start=performance.now(), life=900+Math.random()*400;
+    const vx=(Math.random()-0.5)*120;
+    (function anim(){
+      const t=(performance.now()-start)/life;
+      if(t>=1){el.remove();return}
+      const y=t*400, x=vx*t;
+      el.style.transform=`translate(${x}px,${y}px) rotate(${t*720}deg)`;
+      el.style.opacity=String(1-t);
+      requestAnimationFrame(anim);
+    })();
+  }
+}
+function confettiBurst(){
+  // overlay full-screen burst on game over for new high score
+  const layer=document.createElement('div');
+  layer.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:50;overflow:hidden';
+  document.body.appendChild(layer);
+  const colors=['#B8862C','#B8442B','#F4EDE0','#F0C44A'];
+  const w=window.innerWidth;
+  for(let i=0;i<80;i++){
+    const el=document.createElement('div');
+    el.style.cssText=`position:absolute;left:${Math.random()*w}px;top:-10px;width:8px;height:10px;background:${colors[i%4]};border-radius:2px;opacity:1;`;
+    layer.appendChild(el);
+    const start=performance.now()+Math.random()*400, life=2400+Math.random()*600;
+    const vx=(Math.random()-0.5)*200;
+    (function anim(){
+      const now=performance.now();
+      if(now<start){requestAnimationFrame(anim);return}
+      const t=(now-start)/life;
+      if(t>=1){el.remove();return}
+      const y=t*window.innerHeight*1.05, x=vx*t;
+      el.style.transform=`translate(${x}px,${y}px) rotate(${t*1080}deg)`;
+      el.style.opacity=String(1-Math.max(0,t-0.6)*2.5);
+      requestAnimationFrame(anim);
+    })();
+  }
+  setTimeout(()=>layer.remove(),3500);
+}
+
+/* =========================================================================
+   8. SUBTITLE / CHATTER
+   ========================================================================= */
+let chatterTimer=null, typeTimer=null;
+function say(cat){
+  if(state.familyMode && /carbon|carney|smith|pipeline|tmx|fifa|decrim|conservative|eby/i.test(JSON.stringify(LINES[cat]||[]))){
+    cat='radio'; // family mode falls back to neutral lines (rough but effective)
+  }
+  const line=pick(cat); if(!line) return;
+  const who=document.getElementById('who'), txt=document.getElementById('txt'), bar=document.getElementById('chatter');
+  if(!who||!txt) return;
+  if(typeTimer){clearInterval(typeTimer);typeTimer=null}
+  if(chatterTimer){clearTimeout(chatterTimer);chatterTimer=null}
+  bar.classList.remove('fade');
+  who.textContent=line[0]+':';
+  txt.textContent='';
+  const full=line[1]; let i=0;
+  typeTimer=setInterval(()=>{
+    txt.textContent=full.slice(0,++i);
+    if(i>=full.length){clearInterval(typeTimer);typeTimer=null}
+  },35);
+  chatterTimer=setTimeout(()=>{
+    bar.classList.add('fade');
+  },2600);
+  // Speak it. Strip emoji/non-speech chars; keep speech reasonably clean.
+  const speakable = full.replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}🇨🇦↑↓←→]/gu,'').trim();
+  if(speakable) speak(line[0], speakable);
+}
+
+/* =========================================================================
+   9. SHARE
+   ========================================================================= */
+function buildEmojiGrid(durMs){
+  // 6x6 = 36 cells. Mark cells where misses occurred.
+  const cells=new Array(36).fill('🟫');
+  state.missTimeline.forEach(t=>{
+    const idx=Math.min(35,Math.max(0,Math.floor((t/Math.max(1,durMs))*36)));
+    cells[idx]='🟪';
+  });
+  let out='';
+  for(let r=0;r<6;r++) out+=cells.slice(r*6,r*6+6).join('')+(r<5?'\n':'');
+  return out;
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function fmt(n){return Math.round(n).toLocaleString('en-CA')}
+
+async function shareScore(text,url){
+  if(navigator.share){
+    try{
+      await navigator.share({title:'FIX THE BLOCK — Steveston Garage Doors',text,url});
+      sndShare(); track('share_native_success'); return;
+    }catch(e){
+      if(e && e.name!=='AbortError') track('share_native_error',{name:e.name});
+    }
+  }
+  try{
+    await navigator.clipboard.writeText(text+'\n'+url);
+    showToast('Copied! Paste anywhere 🔧');
+    sndShare(); track('share_clipboard');
+  }catch(e){
+    showToast('Press & hold the grid to copy.');
+  }
+}
+function shareNetwork(net,text,url){
+  track('share_button',{network:net});
+  const enc=encodeURIComponent;
+  const txt=text+'\n'+url;
+  let target=null;
+  switch(net){
+    case 'sms':{
+      const isIOS=/iPhone|iPad|iPod/i.test(navigator.userAgent);
+      target= isIOS?`sms:&body=${enc(txt)}`:`sms:?body=${enc(txt)}`;
+      window.location.href=target; return;
+    }
+    case 'whatsapp': target=`https://wa.me/?text=${enc(txt)}`; break;
+    case 'x': target=`https://twitter.com/intent/tweet?text=${enc(text.slice(0,220))}&url=${enc(url)}`; break;
+    case 'facebook': target=`https://www.facebook.com/sharer/sharer.php?u=${enc(url)}&quote=${enc(text)}`; break;
+    case 'reddit': target=`https://www.reddit.com/submit?url=${enc(url)}&title=${enc('I scored $'+fmt(state.score)+" on FIX THE BLOCK 🔧 — try beating me, r/vancouver")}`; break;
+    case 'linkedin': target=`https://www.linkedin.com/sharing/share-offsite/?url=${enc(url)}`; break;
+    case 'instagram':
+      navigator.clipboard&&navigator.clipboard.writeText(txt).catch(()=>{});
+      showToast('Copied! Paste in your IG story 📸');
+      return;
+    case 'copy':
+      navigator.clipboard&&navigator.clipboard.writeText(txt).then(()=>showToast('Copied 📋')).catch(()=>showToast('Could not copy'));
+      sndShare(); return;
+  }
+  if(target) window.open(target,'_blank','noopener');
+}
+
+function bindVoiceToggle(){
+  const b=document.getElementById('vtog'); if(!b) return;
+  b.addEventListener('pointerdown',e=>{
+    e.preventDefault();
+    audioInit();
+    setSpeechEnabled(!speechEnabled);
+    b.classList.toggle('off', !speechEnabled);
+    if(speechEnabled){
+      // Trigger one short utterance inside the user gesture so iOS unlocks SS.
+      try{ if(SS){ const u=new SpeechSynthesisUtterance(' '); u.volume=0; SS.speak(u); } }catch(e){}
+      showToast('Voice on 🗣️');
+    } else {
+      showToast('Voice off');
+    }
+  });
+}
+
+function showToast(msg){
+  let t=document.querySelector('.toast');
+  if(!t){t=document.createElement('div');t.className='toast';document.body.appendChild(t)}
+  t.textContent=msg;
+  t.classList.add('show');
+  clearTimeout(showToast._t);
+  showToast._t=setTimeout(()=>t.classList.remove('show'),2400);
+}
+
+/* =========================================================================
+   10. KONAMI / EASTER EGGS
+   ========================================================================= */
+const KONAMI=['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+let kBuf=[];
+window.addEventListener('keydown',e=>{
+  kBuf.push(e.key.length===1?e.key.toLowerCase():e.key);
+  if(kBuf.length>KONAMI.length) kBuf.shift();
+  if(kBuf.length===KONAMI.length && kBuf.every((v,i)=>v===KONAMI[i])) triggerKonami();
+});
+
+// 4-corner mobile cheat
+const corners=[];
+window.addEventListener('pointerdown',e=>{
+  if(state.screen!=='play') return;
+  const w=window.innerWidth, h=window.innerHeight;
+  const tl=e.clientX<w*0.25 && e.clientY<h*0.25;
+  const tr=e.clientX>w*0.75 && e.clientY<h*0.25;
+  const bl=e.clientX<w*0.25 && e.clientY>h*0.75;
+  const br=e.clientX>w*0.75 && e.clientY>h*0.75;
+  let label=null;
+  if(tl)label='tl'; else if(tr)label='tr'; else if(bl)label='bl'; else if(br)label='br';
+  if(!label) return;
+  const now=performance.now();
+  corners.push({l:label,t:now});
+  while(corners.length && now-corners[0].t>2000) corners.shift();
+  const seq=corners.map(c=>c.l).join(',');
+  if(seq.indexOf('tl,tr,bl,br')>=0) triggerKonami();
+});
+
+function triggerKonami(){
+  if(state.konamiUsed||state.screen!=='play') return;
+  state.konamiUsed=true;
+  state.score+=5000;
+  updateHUD();
+  flashScore();
+  say('konami');
+  confettiSmall();
+  track('easter_konami');
+}
+
+/* =========================================================================
+   11. BEAT-CHALLENGE URL
+   ========================================================================= */
+function parseBeatParams(){
+  try{
+    const u=new URL(window.location.href);
+    const beat=parseInt(u.searchParams.get('beat')||'0',10);
+    const by=(u.searchParams.get('by')||'').slice(0,8).replace(/[^a-zA-Z0-9-]/g,'');
+    if(beat>0){state.beatTarget=beat; state.beatBy=by||null}
+  }catch(e){}
+}
+
+/* =========================================================================
+   12. BOOT
+   ========================================================================= */
+parseBeatParams();
+renderStart();
+window.addEventListener('visibilitychange',()=>{
+  if(document.hidden && rafId){cancelAnimationFrame(rafId);rafId=null}
+  else if(!document.hidden && state.screen==='play' && !rafId){
+    lastFrame=performance.now();
+    rafId=requestAnimationFrame(loop);
+  }
+});
+
+})();
+</script>
+</body>
+</html>
