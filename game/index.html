@@ -82,6 +82,8 @@ a{color:var(--brass-2);text-decoration:none}
 .start-foot{font-family:var(--font-mono);font-size:11px;color:var(--bone-2);opacity:.85;line-height:1.6;padding-bottom:6px}
 .start-foot a{color:var(--brass-2)}
 .mute{position:absolute;top:14px;right:14px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:rgba(0,0,0,.3);font-size:16px;z-index:5;color:var(--bone-2)}
+.voice-tog{position:absolute;top:14px;right:58px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:rgba(0,0,0,.3);font-size:16px;z-index:5;color:var(--bone-2)}
+.voice-tog.off{opacity:.4}
 
 /* ---- HUD ---- */
 .hud{display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:13px;color:var(--bone-2)}
@@ -362,6 +364,7 @@ function setMuted(m){
   muted=m;
   ls('sgd_muted',m?'1':'0');
   if(masterGain) masterGain.gain.value=m?0:0.35;
+  if(m) speechStop();
 }
 function env(node,attack,release,peak){
   const t=actx.currentTime;
@@ -426,6 +429,105 @@ function sndGameOver(){
 function sndShare(){
   if(!actx)return;
   [440,880,1760].forEach(f=>tone(f,f,0.6,'sine',0.15));
+}
+
+/* ---- Web Speech (per-persona voices) ---- */
+const SS = ('speechSynthesis' in window) ? window.speechSynthesis : null;
+let speechEnabled = ls('sgd_speech')!=='0'; // on by default
+let voiceMap = {}; // persona -> SpeechSynthesisVoice
+let voicesReady = false;
+
+// Pitch/rate per persona — varies even when one voice has to cover multiple personas.
+const PERSONA_PROFILE = {
+  MIKE:   {pitch:0.78, rate:1.00, pref:['male']},
+  DAVE:   {pitch:0.95, rate:1.05, pref:['male']},
+  SUNNY:  {pitch:1.00, rate:1.05, pref:['female']},
+  RAJ:    {pitch:1.05, rate:1.12, pref:['male']},
+  BAILEY: {pitch:1.18, rate:1.02, pref:['female']}
+};
+
+// Heuristic: classify a voice as 'male' / 'female' / 'unknown' by name.
+const FEMALE_HINTS = /(female|samantha|karen|moira|tessa|fiona|victoria|allison|ava|susan|zira|hazel|catherine|serena|amelie|amy|nicole|kate|sara|emma|joanna|salli|kendra|kimberly|ivy|aria|jenny|clara|libby|sonia|vicki|alex.*female|google.*female|microsoft.*(zira|hazel|aria|jenny|clara|libby|sonia)|google uk english female|google us english.*female)/i;
+const MALE_HINTS   = /(male|daniel|fred|alex|tom|aaron|arthur|bruce|oliver|brian|matthew|justin|joey|kevin|mark|david|guy|ryan|george|liam|google.*male|microsoft.*(david|mark|guy|ryan|george)|google uk english male|google us english.*male)/i;
+
+function voiceGender(v){
+  const n=(v.name||'')+' '+(v.voiceURI||'');
+  if(FEMALE_HINTS.test(n)) return 'female';
+  if(MALE_HINTS.test(n)) return 'male';
+  return 'unknown';
+}
+
+function pickVoices(){
+  if(!SS) return;
+  const all = SS.getVoices();
+  if(!all || !all.length) return;
+  // Prefer en-CA, en-US, en-GB, then any English
+  const en = all.filter(v=>/^en[-_]/i.test(v.lang||'')).sort((a,b)=>{
+    const score=v=>(/^en[-_]CA/i.test(v.lang)?0:/^en[-_]US/i.test(v.lang)?1:/^en[-_]GB/i.test(v.lang)?2:3);
+    return score(a)-score(b);
+  });
+  const pool = en.length?en:all;
+
+  const males   = pool.filter(v=>voiceGender(v)==='male');
+  const females = pool.filter(v=>voiceGender(v)==='female');
+  const unknown = pool.filter(v=>voiceGender(v)==='unknown');
+
+  function take(list, idx, fallback){
+    if(list.length) return list[idx % list.length];
+    return fallback || pool[0] || null;
+  }
+  voiceMap = {
+    MIKE:   take(males,   0, take(unknown,0)),
+    DAVE:   take(males,   1, take(unknown,1)),
+    RAJ:    take(males,   2, take(unknown,2)),
+    SUNNY:  take(females, 0, take(unknown,0)),
+    BAILEY: take(females, 1, take(unknown,1))
+  };
+  voicesReady = true;
+}
+
+if(SS){
+  // voices may load async
+  pickVoices();
+  SS.addEventListener && SS.addEventListener('voiceschanged', pickVoices);
+  // Some browsers (mobile Safari) need a poll
+  let tries=0;
+  const poll=setInterval(()=>{
+    if(voicesReady || tries++>20){clearInterval(poll); return}
+    pickVoices();
+  },250);
+}
+
+function speak(persona, text){
+  if(!SS || muted || !speechEnabled) return;
+  try{
+    SS.cancel(); // interrupt prior line — matches the "no queue" rule
+    const u = new SpeechSynthesisUtterance(text);
+    const prof = PERSONA_PROFILE[persona] || {pitch:1, rate:1};
+    u.pitch = prof.pitch;
+    u.rate  = prof.rate;
+    u.volume = 0.95;
+    if(!voicesReady) pickVoices();
+    if(voiceMap[persona]) u.voice = voiceMap[persona];
+    u.lang = (u.voice && u.voice.lang) || 'en-CA';
+    SS.speak(u);
+  }catch(e){/* swallow — speech is enhancement, not core */}
+}
+function speechStop(){ try{ SS && SS.cancel() }catch(e){} }
+function primeSpeech(){
+  // iOS Safari requires SpeechSynthesis to be invoked from inside a user gesture
+  // before it'll speak later (similar to AudioContext). Fire a silent utterance.
+  if(!SS) return;
+  try{
+    const u=new SpeechSynthesisUtterance(' ');
+    u.volume=0; u.rate=1; u.pitch=1;
+    SS.speak(u);
+  }catch(e){}
+}
+function setSpeechEnabled(on){
+  speechEnabled = !!on;
+  ls('sgd_speech', on?'1':'0');
+  if(!on) speechStop();
 }
 
 /* =========================================================================
@@ -532,6 +634,7 @@ function renderStart(){
     ${SVG_BG}
     <div id="tint"></div>
     <button class="mute" id="mute" aria-label="Toggle sound">${muted?'🔇':'🔊'}</button>
+    <button class="voice-tog ${speechEnabled?'':'off'}" id="vtog" aria-label="Toggle voice chatter" title="Voice chatter">🗣️</button>
     <div class="screen start-wrap">
       <div class="brand">
         <h1 id="title">FIX <span class="blk">THE</span> BLOCK</h1>
@@ -555,8 +658,9 @@ function renderStart(){
     </div>
   `;
   document.getElementById('mute').addEventListener('pointerdown',e=>{e.preventDefault();audioInit();setMuted(!muted);e.currentTarget.textContent=muted?'🔇':'🔊'});
-  document.getElementById('play-endless').addEventListener('pointerdown',e=>{e.preventDefault();audioInit();state.daily=false;startGame()});
-  document.getElementById('play-daily').addEventListener('pointerdown',e=>{e.preventDefault();audioInit();state.daily=true;startGame()});
+  bindVoiceToggle();
+  document.getElementById('play-endless').addEventListener('pointerdown',e=>{e.preventDefault();audioInit();primeSpeech();state.daily=false;startGame()});
+  document.getElementById('play-daily').addEventListener('pointerdown',e=>{e.preventDefault();audioInit();primeSpeech();state.daily=true;startGame()});
   const rb=document.getElementById('reset-hs');
   if(rb) rb.addEventListener('pointerdown',e=>{e.preventDefault(); if(confirm('Reset local high score?')){lsRm('sgd_high'); state.highScore=0; renderStart()}});
 
@@ -580,6 +684,7 @@ function renderPlay(){
     ${SVG_BG}
     <div id="tint"></div>
     <button class="mute" id="mute" aria-label="Toggle sound">${muted?'🔇':'🔊'}</button>
+    <button class="voice-tog ${speechEnabled?'':'off'}" id="vtog" aria-label="Toggle voice chatter" title="Voice chatter">🗣️</button>
     <div class="screen" id="play-screen">
       <div class="hud">
         <div class="score" id="score">$0</div>
@@ -596,6 +701,7 @@ function renderPlay(){
     </div>
   `;
   document.getElementById('mute').addEventListener('pointerdown',e=>{e.preventDefault();setMuted(!muted);e.currentTarget.textContent=muted?'🔇':'🔊'});
+  bindVoiceToggle();
   state.houses=Array.from(document.querySelectorAll('.house')).map(el=>({el,broken:false,brokenAt:0,repairWin:0,boardedUntil:0,timer:null}));
   state.houses.forEach((h,i)=>{
     h.el.addEventListener('pointerdown',ev=>{ev.preventDefault();onTap(i)},{passive:false});
@@ -627,6 +733,7 @@ function renderGameOver(){
     ${SVG_BG}
     <div id="tint"></div>
     <button class="mute" id="mute" aria-label="Toggle sound">${muted?'🔇':'🔊'}</button>
+    <button class="voice-tog ${speechEnabled?'':'off'}" id="vtog" aria-label="Toggle voice chatter" title="Voice chatter">🗣️</button>
     <div class="screen go" id="go">
       <h2>GAME OVER</h2>
       <div class="final">$${fmt(state.score)}</div>
@@ -659,6 +766,7 @@ function renderGameOver(){
   `;
 
   document.getElementById('mute').addEventListener('pointerdown',e=>{e.preventDefault();setMuted(!muted);e.currentTarget.textContent=muted?'🔇':'🔊'});
+  bindVoiceToggle();
   document.getElementById('cta-call').addEventListener('click',()=>track('tap_to_call'));
   document.getElementById('play-again').addEventListener('pointerdown',e=>{e.preventDefault();track('replay',{playNumber:state.playNumber+1});resetGameState();renderStart()});
   document.getElementById('share-btn').addEventListener('pointerdown',e=>{e.preventDefault();shareScore(block,shareUrl)});
@@ -1066,6 +1174,9 @@ function say(cat){
   chatterTimer=setTimeout(()=>{
     bar.classList.add('fade');
   },2600);
+  // Speak it. Strip emoji/non-speech chars; keep speech reasonably clean.
+  const speakable = full.replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}🇨🇦↑↓←→]/gu,'').trim();
+  if(speakable) speak(line[0], speakable);
 }
 
 /* =========================================================================
@@ -1127,6 +1238,23 @@ function shareNetwork(net,text,url){
       sndShare(); return;
   }
   if(target) window.open(target,'_blank','noopener');
+}
+
+function bindVoiceToggle(){
+  const b=document.getElementById('vtog'); if(!b) return;
+  b.addEventListener('pointerdown',e=>{
+    e.preventDefault();
+    audioInit();
+    setSpeechEnabled(!speechEnabled);
+    b.classList.toggle('off', !speechEnabled);
+    if(speechEnabled){
+      // Trigger one short utterance inside the user gesture so iOS unlocks SS.
+      try{ if(SS){ const u=new SpeechSynthesisUtterance(' '); u.volume=0; SS.speak(u); } }catch(e){}
+      showToast('Voice on 🗣️');
+    } else {
+      showToast('Voice off');
+    }
+  });
 }
 
 function showToast(msg){
