@@ -3,3 +3,6 @@ results/
 *.csv
 *.xlsx
 __pycache__/
+
+# Stray Sherlock output if run outside ./results
+/*.txt
